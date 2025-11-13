@@ -1,0 +1,1610 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ranbir Sanitary Store Dashboard</title>
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com" rel="preconnect" />
+  <link crossorigin href="https://fonts.gstatic.com" rel="preconnect" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+
+  <!-- Scripts -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,typography,container-queries"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Main Tailwind Config -->
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            primary: "#1E3A8A", // Main theme color (dark blue)
+            
+            // Light Mode
+            "background-light": "#FFFFFF",
+            "surface-light": "#F4F4F4",
+            "card-light": "#F9FAFB",
+            "section-light": "#F4F4F4",
+            "text-light": "#000000",
+            "text-light-primary": "#000000",
+            "text-light-secondary": "#333333",
+            "text-light-tertiary": "#6B7280",
+            "subtext-light": "#333333",
+            "heading-light": "#000000",
+            "border-light": "#E5E7EB",
+            "subtle-light": "#6B7280",
+
+            // Dark Mode
+            "background-dark": "#111827",
+            "surface-dark": "#1F2937",
+            "card-dark": "#1F2937",
+            "section-dark": "#201A2C",
+            "text-dark": "#FFFFFF",
+            "text-dark-primary": "#FFFFFF",
+            "text-dark-secondary": "#D1D5DB",
+            "text-dark-tertiary": "#9CA3AF",
+            "subtext-dark": "#D1D5DB",
+            "heading-dark": "#FFFFFF",
+            "border-dark": "#374151",
+            "subtle-dark": "#9CA3AF",
+          },
+          fontFamily: {
+            display: ["Poppins", "sans-serif"],
+            inter: ["Inter", "sans-serif"],
+          },
+          borderRadius: {
+            DEFAULT: "0.5rem",
+            lg: "0.75rem",
+            xl: "1rem",
+            full: "9999px"
+          },
+        },
+      },
+    };
+  </script>
+
+  <!-- Common Styles -->
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+    }
+    .material-icons,
+    .material-icons-outlined,
+    .material-symbols-outlined {
+      font-size: inherit;
+      vertical-align: middle;
+    }
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    /* Active nav link style */
+    .nav-link.active {
+      color: #1E3A8A;
+      font-weight: 600;
+      border-bottom: 2px solid #1E3A8A;
+    }
+    .dark .nav-link.active {
+      color: #60A5FA; /* Brighter blue for dark mode */
+      border-bottom-color: #60A5FA;
+    }
+  </style>
+</head>
+
+<body class="bg-background-light dark:bg-background-dark text-text-light-secondary dark:text-dark-secondary font-display transition-colors duration-300">
+
+  <!-- Persistent Header -->
+  <header class="bg-background-light/90 dark:bg-background-dark/90 backdrop-blur-sm sticky top-0 z-50 border-b border-border-light dark:border-border-dark">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-20">
+        
+        <!-- Logo and Title -->
+        <div class="flex items-center space-x-3">
+          <div class="w-10 h-10 bg-primary rounded-full flex items-center justify-center">
+            <span class="material-symbols-outlined text-white">shower</span>
+          </div>
+          <span class="text-xl font-semibold text-heading-light dark:text-heading-dark hidden sm:inline-block">Ranbir Sanitary Store</span>
+        </div>
+        
+        <!-- Navigation Links -->
+        <nav class="hidden md:flex space-x-6">
+          <a href="#home" class="nav-link text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors pb-2" data-page="home">Home</a>
+          <a href="#sales" class="nav-link text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors pb-2" data-page="sales" data-admin="true">Sales</a>
+          <a href="#inventory" class="nav-link text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors pb-2" data-page="inventory" data-admin="true">Inventory</a>
+          <a href="#customers" class="nav-link text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors pb-2" data-page="customers" data-admin="true">Customers</a>
+          <a href="#operations" class="nav-link text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors pb-2" data-page="operations" data-admin="true">Operations</a>
+          <a href="#contact" class="nav-link text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors pb-2" data-page="contact">Contact</a>
+        </nav>
+        
+        <!-- Actions -->
+        <div class="flex items-center gap-4">
+          <button id="admin-toggle-btn" class="px-3 py-1.5 md:px-4 md:py-2 text-sm font-medium rounded-md bg-primary/10 text-primary dark:bg-primary/20 dark:text-blue-300 hover:bg-primary/20 dark:hover:bg-primary/30 transition-colors">
+            Admin
+          </button>
+          <button class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-10 w-10 bg-surface-light dark:bg-surface-dark text-subtext-light dark:text-subtext-dark hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+            <span class="material-symbols-outlined text-xl">notifications</span>
+          </button>
+          <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" style='background-image: url("https://placehold.co/100x100/EBF5FF/1E3A8A?text=R");' data-alt="User profile picture"></div>
+          
+          <!-- Mobile Menu Button -->
+          <button class="md:hidden p-2 rounded-md text-gray-600 dark:text-gray-300" id="mobile-menu-btn">
+            <span class="material-icons-outlined">menu</span>
+          </button>
+        </div>
+      </div>
+      
+      <!-- Mobile Menu -->
+      <div id="mobile-menu" class="hidden md:hidden py-4 space-y-2 border-t border-border-light dark:border-border-dark">
+        <a href="#home" class="nav-link block px-4 py-2 text-gray-600 dark:text-gray-300" data-page="home">Home</a>
+        <a href="#sales" class="nav-link block px-4 py-2 text-gray-600 dark:text-gray-300" data-page="sales" data-admin="true">Sales</a>
+        <a href="#inventory" class="nav-link block px-4 py-2 text-gray-600 dark:text-gray-300" data-page="inventory" data-admin="true">Inventory</a>
+        <a href="#customers" class="nav-link block px-4 py-2 text-gray-600 dark:text-gray-300" data-page="customers" data-admin="true">Customers</a>
+        <a href="#operations" class="nav-link block px-4 py-2 text-gray-600 dark:text-gray-300" data-page="operations" data-admin="true">Operations</a>
+        <a href="#contact" class="nav-link block px-4 py-2 text-gray-600 dark:text-gray-300" data-page="contact">Contact</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Area -->
+  <!-- This is where the content from different pages will be injected -->
+  <main id="content-area">
+    <!-- Loading placeholder -->
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center">
+      <p class="text-2xl text-text-light-tertiary dark:text-dark-tertiary">Loading Dashboard...</p>
+    </div>
+  </main>
+
+  <!-- Main Application Logic -->
+  <script type="module">
+    // Store all chart instances to destroy them on page change
+    let activeCharts = [];
+    let isAdminView = false;
+
+    // 1. Page Content Storage
+    // Stores the HTML for each page
+    const pageContent = {
+      // --- Home Page Content ---
+      'home': `
+        <main>
+          <section class="py-20 md:py-32">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8 grid md:grid-cols-2 gap-12 items-center">
+              <div class="text-center md:text-left">
+                <h1 class="text-4xl md:text-5xl lg:text-6xl font-medium text-heading-light dark:text-heading-dark leading-tight mb-4">Smart Solutions for Every Bathroom</h1>
+                <p class="text-lg text-text-light dark:text-text-dark mb-8">Explore top-quality sanitary products with intelligent business insights.</p>
+                <button class="bg-primary text-white font-medium py-3 px-8 rounded-full shadow-lg hover:shadow-primary/40 hover:-translate-y-1 transition-all duration-300">Shop Now</button>
+              </div>
+              <div>
+                <img alt="A bright and modern bathroom interior" class="rounded-lg shadow-2xl w-full h-full object-cover aspect-square md:aspect-auto" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD_CGermhbhVTJl-1iAH3_mzOO9_oPXDht8VEXA5v1OF0VeHSjyO0dwJ5u3-cEoEjfprdaoNWK8iqH35NTJVVAiOk0D3yP4_2PM820fgZxQ4bzdsP9atrIDm7QJV1YZ9OcYg-JtrSx6zRYBFPEops689JeBa9yDcCbjPTzM4trvyzQNbolkrwaibn8jlZ1BaR601JUEvY_3bZs8HA0nGB1VUEggfwcBIvWuMENAPISclQsfTS-7c1084SCesY9F_5dsta84PVdsBd0" onerror="this.src='https://placehold.co/600x600/F4F4F4/333333?text=Modern+Bathroom'">
+              </div>
+            </div>
+          </section>
+          <section class="py-20 bg-surface-light dark:bg-surface-dark">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+              <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-medium text-heading-light dark:text-heading-dark">Featured Products</h2>
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                <div class="bg-background-light dark:bg-background-dark rounded-lg shadow-md overflow-hidden group transition-transform duration-300 hover:-translate-y-2">
+                  <div class="relative">
+                    <img alt="Modern white basin on a wooden countertop" class="w-full h-64 object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBQwes7ArvOw0cfrx0SnoW4g5YQj0I39K5MoADtNzvt48iYlP1GXizj_9z7gm3w8XBYrOApYviMFM8vV79nyIDXGuoTGZS4HOL_jqpdNVdrLcZg3JH7iofuYiOfZA0jbZVfMc8nEur1YCPcdIdNn-qF72Zt_K1BhpW0o9LAkGCWPCTF3bPC1j2yvYa1v9kT_-aPRQQsNC__dpzP4O6Z6xSyHqpqRNwq9K00YnxNX6C4Dh89yxhP3g9QKGiyHr2mUNw7fQ3X_kngKWY" onerror="this.src='https://placehold.co/400x256/F4F4F4/333333?text=Modern+Basin'">
+                    <span class="absolute top-3 left-3 bg-green-100 text-green-800 text-xs font-medium px-2.5 py-1 rounded-full dark:bg-green-900 dark:text-green-300">New</span>
+                  </div>
+                  <div class="p-5">
+                    <h3 class="text-lg font-medium text-heading-light dark:text-heading-dark mb-2">Modern Basin</h3>
+                    <p class="text-lg font-semibold text-primary">Rs. 2999</p>
+                  </div>
+                </div>
+                <div class="bg-background-light dark:bg-background-dark rounded-lg shadow-md overflow-hidden group transition-transform duration-300 hover:-translate-y-2">
+                  <div class="relative">
+                    <img alt="Sleek chrome kitchen faucet" class="w-full h-64 object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDi_xBRKPnINR0jEYz0GkOt2-xKAV-B0m3F0vlakJuWvYtuCw-AklzPu6L8NukNG8Z1o_VC2AibvyHD6Y5BjGIV0Z1Vqog2iub5W8-_p0TP1VYFNODLazkLMqdG9WMWaQ1WasqzM1_LLnw93EbnTnO5InRGgmm9T_I782uToxNEai3or-zNKQwlWOLAJM_kaqNw88-YrZdDyS1nsf4LClkJwPJET3LQqa77F4Ll4DakZ9hyeqqvgeBpA5xXTL_MxbyP9Qw_I7Xw99w" onerror="this.src='https://placehold.co/400x256/F4F4F4/333333?text=Kitchen+Faucet'">
+                    <span class="absolute top-3 left-3 bg-orange-100 text-orange-800 text-xs font-medium px-2.5 py-1 rounded-full dark:bg-orange-900 dark:text-orange-300">Discount</span>
+                  </div>
+                  <div class="p-5">
+                    <h3 class="text-lg font-medium text-heading-light dark:text-heading-dark mb-2">Kitchen Faucet</h3>
+                    <p class="text-lg font-semibold text-primary">Rs. 3499</p>
+                  </div>
+                </div>
+                <div class="bg-background-light dark:bg-background-dark rounded-lg shadow-md overflow-hidden group transition-transform duration-300 hover:-translate-y-2">
+                  <div class="relative">
+                    <img alt="Modern shower set with large shower head" class="w-full h-64 object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBOTO8pNqdqkKTui5oGv_8IgyTPOI1l_fIcpLZMUFmYM5_QaNY_lEQh_17Ca8alH51Tz_CVr03BYvid_SZiJrd7HW9CGHkxOEadEiMkIepsLFBFs_emEIJweOcIPIecefLoCiIf_T79b7DwZA0k4mNESq0vSxVKnPdH9yK7csVUIphR4GPwS3OeNBes8TY4M7W29Kd3eI771ofJOXMzUkFf2TJVvuTpf3RvO7dgyMFEmNbjXiHsHO7IcPhuteJ88fxukVuJRRQ7-HU" onerror="this.src='https://placehold.co/400x256/F4F4F4/333333?text=Shower+Set'">
+                    <span class="absolute top-3 left-3 bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-1 rounded-full dark:bg-blue-900 dark:text-blue-300">Best Seller</span>
+                  </div>
+                  <div class="p-5">
+                    <h3 class="text-lg font-medium text-heading-light dark:text-heading-dark mb-2">Shower Set</h3>
+                    <p class="text-lg font-semibold text-primary">Rs. 9999</p>
+                  </div>
+                </div>
+                <div class="bg-background-light dark:bg-background-dark rounded-lg shadow-md overflow-hidden group transition-transform duration-300 hover:-translate-y-2 sm:col-span-2 lg:col-span-1">
+                  <div class="relative">
+                    <img alt="Stylish patterned wall tiles" class="w-full h-64 object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBvWEEJU0fNmkqIh6FfyQvzIijlLpBpp0GMqkY-bj-1Rj7LOmR2SGqlmWdbh-nhZYl8THup3jiXm9Dn-KbEQsdLvxXe7yBzkolg3y1bSIi2e-TBlHMYGC8F5e8BNh2w1NrVa7XmJeC1kCeKJDGEHQrVNkL9dPFEunLqNSlsh6ww3btJ4w_p8Mo_t0TTSsNWyCVCtKojJim0tTDXAiCWaP_nvwOTD9l-j23BPGR7BlWLF1oXcBLFUPbXGTFygN6QjFr1hsR0b24Gz38" onerror="this.src='https://placehold.co/400x256/F4F4F4/333333?text=Wall+Tiles'">
+                    <span class="absolute top-3 left-3 bg-purple-100 text-purple-800 text-xs font-medium px-2.5 py-1 rounded-full dark:bg-purple-900 dark:text-purple-300">Popular</span>
+                  </div>
+                  <div class="p-5">
+                    <h3 class="text-lg font-medium text-heading-light dark:text-heading-dark mb-2">Wall Tiles</h3>
+                    <p class="text-lg font-semibold text-primary">S30/sq ft</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+          <section class="py-20">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+              <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-medium text-heading-light dark:text-heading-dark">Business Insights</h2>
+                <p class="mt-2 text-lg text-text-light dark:text-text-dark">Check out our latest performance metrics.</p>
+              </div>
+              <div class="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="bg-surface-light dark:bg-surface-dark p-6 rounded-lg shadow-sm">
+                  <p class="text-sm text-gray-500 dark:text-gray-400">Total Monthly Visitors</p>
+                  <p class="text-4xl font-semibold text-primary mt-2">4,500</p>
+                </div>
+                <div class="bg-surface-light dark:bg-surface-dark p-6 rounded-lg shadow-sm">
+                  <p class="text-sm text-gray-500 dark:text-gray-400">Featured Product Clicks</p>
+                  <p class="text-4xl font-semibold text-primary mt-2">1,200</p>
+                </div>
+                <div class="bg-surface-light dark:bg-surface-dark p-6 rounded-lg shadow-sm md:col-span-2">
+                  <p class="text-sm text-gray-500 dark:text-gray-400">Top Selling Category</p>
+                  <p class="text-4xl font-semibold text-primary mt-2">Kitchen Faucets</p>
+                </div>
+              </div>
+            </div>
+          </section>
+          <section class="py-20 bg-surface-light dark:bg-surface-dark">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+              <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-medium text-heading-light dark:text-heading-dark">What Our Customers Say</h2>
+              </div>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                <div class="bg-blue-50 dark:bg-blue-900/20 p-8 rounded-lg">
+                  <div class="flex items-center mb-4">
+                    <img alt="Profile picture of John Doe" class="w-12 h-12 rounded-full mr-4 object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD1JyYLfSGDQgryxWOtzg9tzJFFwoJWrNyWsXfTUy_8ZMSaNMwqd8vBGJi5OPwX8EtcFMRkcO846Lea-ZnpRbs4AU7iO1MTi-tabpkgd3umohcf1bBS6e-q9dMbpwpeZcu0fXprhOuXc5IB3rW85pw7l_EfalWkivr8v85ajdqINfpWSkGw82-lZ69OyK5UznqrdQir3WiZwXUQj8CrWPYVxOIjMv6b3ZgNI6hWJtWMC-ylntb2k20QMwPAnUNJ8vkxEpKb_B7Phac" onerror="this.src='https://placehold.co/100x100/EBF5FF/1E3A8A?text=JD'">
+                    <div>
+                      <p class="font-semibold text-heading-light dark:text-heading-dark">John Doe</p>
+                      <div class="flex text-yellow-400">
+                        <span class="material-icons-outlined text-base">star</span>
+                        <span class="material-icons-outlined text-base">star</span>
+                        <span class="material-icons-outlined text-base">star</span>
+                        <span class="material-icons-outlined text-base">star</span>
+                        <span class="material-icons-outlined text-base">star</span>
+                      </div>
+                    </div>
+                  </div>
+                  <p class="text-text-light dark:text-text-dark">"Great products at fantastic prices! The quality exceeded my expectations. Will definitely shop here again."</p>
+                </div>
+                <div class="bg-green-50 dark:bg-green-900/20 p-8 rounded-lg">
+                  <div class="flex items-center mb-4">
+                    <img alt="Profile picture of Jane Smith" class="w-12 h-12 rounded-full mr-4 object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAV7q_j4EBHTOmxDKniw4QeCsGL8NSJ8EbFEWnLGLoYCP5DVvV_hpxtL16VGFJpm5uRYx_OKFW1oU8ZwfoZGmjw_RCSEjtsoZjFhKJTGdv92l_vhXYzH8HRaFipyiy_dHhmlwEYiMsxHP8A6xCjnQIrWyXZTn-o9VMFYc0kBJJ0Fs7CiBZLg4S8wW9JaRYsMdWt8uuz8A7w8BPRSUJ0Msj7xT0NuCP0j0dEMtmerqPl3yhogoM1_G6Wyfbg4LN_kml-Xu89TmC8J5A" onerror="this.src='https://placehold.co/100x100/E6F4EA/1E3A8A?text=JS'">
+                    <div>
+                      <p class="font-semibold text-heading-light dark:text-heading-dark">Jane Smith</p>
+                      <div class="flex text-yellow-400">
+                        <span class="material-icons-outlined text-base">star</span>
+                        <span class="material-icons-outlined text-base">star</span>
+                        <span class="material-icons-outlined text-base">star</span>
+                        <span class="material-icons-outlined text-base">star</span>
+                        <span class="material-icons-outlined text-base">star_half</span>
+                      </div>
+                    </div>
+                  </div>
+                  <p class="text-text-light dark:text-text-dark">"Very satisfied with my purchase. The delivery was quick and the customer service was very helpful."</p>
+                </div>
+              </div>
+            </div>
+          </section>
+        </main>
+        <footer class="bg-background-light dark:bg-background-dark border-t border-gray-200 dark:border-gray-700">
+          <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="text-center text-sm text-gray-500 dark:text-gray-400 flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+              <div class="flex flex-col md:flex-row md:space-x-4">
+                <span>Address: Near Bus Stand, Batala</span>
+                <span>Email: info@ranbirsanitarystore.com</span>
+                <span>Phone: +91 9814045969</span>
+              </div>
+              <p>© 2025 Ranbir Sanitary Store. All Rights Reserved.</p>
+            </div>
+          </div>
+        </footer>
+      `,
+      
+      // --- Sales Page Content ---
+      'sales': `
+        <div class="container mx-auto p-4 sm:p-6 md:p-8">
+          <section class="mb-10">
+            <h2 class="text-4xl font-bold mb-2 text-text-light-primary dark:text-dark-primary">Welcome, Owner</h2>
+            <p class="mb-6">Get a clear overview of your store's performance.</p>
+            <div class="flex flex-wrap items-center gap-4 mb-6">
+              <div class="relative flex-grow">
+                <span class="material-icons-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">search</span>
+                <input class="w-full pl-10 pr-4 py-3 rounded-md bg-background-light dark:bg-background-dark border border-border-light dark:border-border-dark focus:ring-primary focus:border-primary" placeholder="Search for products" type="text" />
+              </div>
+              <button class="px-6 py-3 rounded-md border border-border-light dark:border-border-dark text-text-light-secondary dark:text-dark-secondary bg-background-light dark:bg-card-dark hover:bg-gray-50 dark:hover:bg-gray-700 transition duration-200">Logout</button>
+              <button class="px-6 py-3 rounded-md bg-primary text-white shadow-md hover:shadow-lg transition duration-200">Notifications</button>
+            </div>
+            <div class="flex items-center space-x-2 bg-card-light dark:bg-card-dark p-1 rounded-lg max-w-max">
+              <button class="px-5 py-2 rounded-md bg-background-light dark:bg-background-dark shadow-sm text-primary font-semibold">Daily</button>
+              <button class="px-5 py-2 rounded-md text-text-light-secondary dark:text-dark-secondary hover:bg-white/50 dark:hover:bg-white/10 transition">Weekly</button>
+              <button class="px-5 py-2 rounded-md text-text-light-secondary dark:text-dark-secondary hover:bg-white/50 dark:hover:bg-white/10 transition">Monthly</button>
+              <button class="px-5 py-2 rounded-md text-text-light-secondary dark:text-dark-secondary hover:bg-white/50 dark:hover:bg-white/10 transition">Yearly</button>
+            </div>
+          </section>
+          <section class="mb-12">
+            <h2 class="text-3xl font-bold mb-2 text-center text-text-light-primary dark:text-dark-primary">Key Performance Indicators</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-6">
+              <div class="bg-gradient-to-br from-blue-700 to-primary text-white p-6 rounded-lg shadow-lg relative overflow-hidden">
+                <span class="material-icons-outlined absolute -right-4 -bottom-4 text-8xl text-white/10">account_balance_wallet</span>
+                <p class="text-sm text-blue-200">Total Sales</p>
+                <p class="text-3xl font-bold mt-1">₹500,000</p>
+                <p class="text-sm mt-2 text-green-300 flex items-center"><span class="material-icons-outlined text-base mr-1">arrow_upward</span>15%</p>
+              </div>
+              <div class="bg-gradient-to-br from-blue-700 to-primary text-white p-6 rounded-lg shadow-lg relative overflow-hidden">
+                <span class="material-icons-outlined absolute -right-4 -bottom-4 text-8xl text-white/10">trending_up</span>
+                <p class="text-sm text-blue-200">Profit Margin %</p>
+                <p class="text-3xl font-bold mt-1">25%</p>
+                <p class="text-sm mt-2 text-green-300 flex items-center"><span class="material-icons-outlined text-base mr-1">arrow_upward</span>2%</p>
+              </div>
+              <div class="bg-gradient-to-br from-blue-700 to-primary text-white p-6 rounded-lg shadow-lg relative overflow-hidden">
+                <span class="material-icons-outlined absolute -right-4 -bottom-4 text-8xl text-white/10">shopping_cart</span>
+                <p class="text-sm text-blue-200">Daily Orders</p>
+                <p class="text-3xl font-bold mt-1">50</p>
+                <p class="text-sm mt-2 text-gray-300 flex items-center"><span class="material-icons-outlined text-base mr-1">arrow_forward</span>0</p>
+              </div>
+              <div class="bg-gradient-to-br from-blue-700 to-primary text-white p-6 rounded-lg shadow-lg relative overflow-hidden">
+                <span class="material-icons-outlined absolute -right-4 -bottom-4 text-8xl text-white/10">receipt_long</span>
+                <p class="text-sm text-blue-200">Avg. Bill Value</p>
+                <p class="text-3xl font-bold mt-1">₹1,000</p>
+                <p class="text-sm mt-2 text-green-300 flex items-center"><span class="material-icons-outlined text-base mr-1">arrow_upward</span>5%</p>
+              </div>
+              <div class="bg-card-light dark:bg-card-dark p-6 rounded-lg col-span-1 sm:col-span-2 lg:col-span-4 border border-border-light dark:border-border-dark">
+                <p class="text-sm text-text-light-secondary dark:text-dark-secondary">Top Product</p>
+                <p class="text-3xl font-bold mt-1 text-text-light-primary dark:text-dark-primary">Wall-mounted Tap</p>
+                <p class="text-sm mt-2 text-text-light-secondary dark:text-dark-secondary flex items-center"><span class="material-icons-outlined text-base mr-1">arrow_forward</span>0</p>
+              </div>
+            </div>
+          </section>
+          <section class="mb-12">
+            <h2 class="text-3xl font-bold mb-2 text-center text-text-light-primary dark:text-dark-primary">Sales Performance</h2>
+            <p class="text-center mb-8">Analyze your sales and profitability trends.</p>
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              <div class="lg:col-span-3 bg-card-light dark:bg-card-dark p-6 rounded-lg border border-border-light dark:border-border-dark">
+                <div class="flex flex-wrap justify-between items-start mb-4">
+                  <div>
+                    <h3 class="font-semibold text-text-light-primary dark:text-dark-primary">Monthly Sales Trend</h3>
+                    <p class="text-sm">Revenue vs. Expenses</p>
+                  </div>
+                  <div class="flex items-center gap-4 text-sm">
+                    <div class="flex items-center gap-2">
+                      <div class="w-3 h-3 rounded-full bg-blue-500"></div>
+                      <span>Revenue</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                      <div class="w-3 h-3 rounded-full bg-blue-200 dark:bg-blue-900"></div>
+                      <span>Expenses</span>
+                    </div>
+                  </div>
+                </div>
+                <!-- Mockup of Sales Chart -->
+                <div class="w-full h-80 relative pr-4">
+                  <canvas id="salesTrendChart"></canvas>
+                </div>
+              </div>
+              <div class="lg:col-span-2 bg-card-light dark:bg-card-dark p-6 rounded-lg border border-border-light dark:border-border-dark">
+                <h3 class="font-semibold mb-1 text-text-light-primary dark:text-dark-primary">Top 5 Selling Products</h3>
+                <p class="text-sm mb-4">Quantities Sold</p>
+                <div class="h-80 w-full space-y-4">
+                  <div class="group relative flex items-center gap-4">
+                    <p class="text-xs w-20 shrink-0 text-right">Faucets</p>
+                    <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-4">
+                      <div class="bg-blue-600 h-4 rounded-full transition-all duration-300 group-hover:bg-blue-500" style="width: 90%;"></div>
+                    </div>
+                    <p class="text-xs font-semibold">180</p>
+                  </div>
+                  <div class="group relative flex items-center gap-4">
+                    <p class="text-xs w-20 shrink-0 text-right">Showers</p>
+                    <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-4">
+                      <div class="bg-blue-500 h-4 rounded-full transition-all duration-300 group-hover:bg-blue-400" style="width: 75%;"></div>
+                    </div>
+                    <p class="text-xs font-semibold">150</p>
+                  </div>
+                  <div class="group relative flex items-center gap-4">
+                    <p class="text-xs w-20 shrink-0 text-right">Sinks</p>
+                    <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-4">
+                      <div class="bg-blue-400 h-4 rounded-full transition-all duration-300 group-hover:bg-blue-300" style="width: 60%;"></div>
+                    </div>
+                    <p class="text-xs font-semibold">120</p>
+                  </div>
+                  <div class="group relative flex items-center gap-4">
+                    <p class="text-xs w-20 shrink-0 text-right">Toilets</p>
+                    <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-4">
+                      <div class="bg-blue-300 h-4 rounded-full transition-all duration-300 group-hover:bg-blue-200" style="width: 45%;"></div>
+                    </div>
+                    <p class="text-xs font-semibold">90</p>
+                  </div>
+                  <div class="group relative flex items-center gap-4">
+                    <p class="text-xs w-20 shrink-0 text-right">Pipes</p>
+                    <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-4">
+                      <div class="bg-blue-200 h-4 rounded-full transition-all duration-300 group-hover:bg-blue-100" style="width: 30%;"></div>
+                    </div>
+                    <p class="text-xs font-semibold">60</p>
+                  </div>
+                </div>
+              </div>
+              <div class="bg-card-light dark:bg-card-dark p-6 rounded-lg border border-border-light dark:border-border-dark flex flex-col items-center justify-center">
+                <h3 class="font-semibold mb-1 text-text-light-primary dark:text-dark-primary">Profit by Category</h3>
+                <p class="text-sm mb-4">Profit Breakdown</p>
+                <div class="relative w-48 h-48 sm:w-56 sm:h-56">
+                  <canvas id="profitCategoryChart"></canvas>
+                  <div class="absolute inset-0 flex flex-col items-center justify-center">
+                    <span class="text-2xl font-bold text-text-light-primary dark:text-dark-primary">₹125k</span>
+                    <span class="text-sm">Total Profit</span>
+                  </div>
+                </div>
+                <div class="mt-4 text-xs space-y-2 w-full text-center" id="profit-legend">
+                  <!-- Legend will be dynamically generated by Chart.js -->
+                </div>
+              </div>
+            </div>
+          </section>
+          <section class="mb-12">
+            <h2 class="text-3xl font-bold mb-2 text-center text-text-light-primary dark:text-dark-primary">Sales Summary</h2>
+            <p class="text-center mb-8">Detailed summary of sales by date and product.</p>
+            <div class="space-y-4">
+              <div class="flex items-center justify-between p-4 bg-card-light dark:bg-card-dark rounded-lg border border-border-light dark:border-border-dark">
+                <div class="flex items-center gap-4">
+                  <img alt="Product A - Tap" class="w-16 h-16 rounded-md object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDvE2LtcA0GML7MbIrRTogldLGbqxv2mhrdgrBGahe9boiRFA_c4iTM53YAB0WZLXlHWc6-f-L6Wf-TMZhCmoZ2AzJhKyb369__KsC-HhWgpB7npUDMLFgjOJ10JtWq45WEHVg65lCHSCMwvxX3EHTNm4DEv-iIKGAl5bmJ-ZsEL8Rpj1XIdfDpiTjzccSe_kTC3mBDh5d60n3gcTiwrPkNO--T0vu_RICHXKhhGaB-xfY3li0a52ofnEorwlXp8A5v_wICEaGJGXs" onerror="this.src='https://placehold.co/100x100/F4F4F4/333333?text=Faucet'">
+                  <div>
+                    <p class="font-semibold text-lg text-text-light-primary dark:text-dark-primary">Product A - Faucet</p>
+                    <p class="text-sm text-text-light-secondary dark:text-dark-secondary">2023-10-01</p>
+                  </div>
+                </div>
+                <p class="font-bold text-lg text-primary">₹10,000</p>
+              </div>
+              <div class="flex items-center justify-between p-4 bg-card-light dark:bg-card-dark rounded-lg border border-border-light dark:border-border-dark">
+                <div class="flex items-center gap-4">
+                  <img alt="Product B - Sink" class="w-16 h-16 rounded-md object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCsdvFlIKKIrXCW-wjzYGHZESwuKyyDPBihNrbFOocg7rdX-zWb4_U8a7k4D0enj0V3jMuZRAVauavDLVj6MxFEbDSniVvf0N4rmg66svdjlhg0lPqNELUqyQ1D8k9cVG8XB4tvySZSCOOXT5TK1fc3iRiDqSK2KRzzy84IuVxtBzoN8sV9V5o6Mv8CyCAhJDOgiDPnULJkoHfekuEV3DpJwQ6Lzy94f4hYQOn9JAqc5V3I5ZaARigUXX0ZWfsLi2uUXTkrJXPJVaU" onerror="this.src='https://placehold.co/100x100/F4F4F4/333333?text=Basin'">
+                  <div>
+                    <p class="font-semibold text-lg text-text-light-primary dark:text-dark-primary">Product B - Basin</p>
+                    <p class="text-sm text-text-light-secondary dark:text-dark-secondary">2023-10-02</p>
+                  </div>
+                </div>
+                <p class="font-bold text-lg text-primary">₹15,000</p>
+              </div>
+              <div class="flex items-center justify-between p-4 bg-card-light dark:bg-card-dark rounded-lg border border-border-light dark:border-border-dark">
+                <div class="flex items-center gap-4">
+                  <img alt="Product C - Shower" class="w-16 h-16 rounded-md object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD-4or1ZeLyqb-7kJW7UUNkoIz08ldYvu5brOVzg267u2kE-ZKw62kmphPhiy8gqaPnMQlqlpqQvSEygj_ZtBCFTjIIIE-R2Ud28ozHlH2B67v-Si5tXjvjg1rLK-DH85mLztx4XDKcyGs0N4UwyDa7HbMlxQ0DQbSHbmorhW24q2FCaolrWvVehX3RKOzscB0IqUxG4xl36LNWbRybasQAD760YZti3gxgZnlhIlRjA7BSHsb9Bv_1aoUJdByvbpQ0ezUTWEr6uE4" onerror="this.src='https://placehold.co/100x100/F4F4F4/333333?text=Shower'">
+                  <div>
+                    <p class="font-semibold text-lg text-text-light-primary dark:text-dark-primary">Product C - Shower Head</p>
+                    <p class="text-sm text-text-light-secondary dark:text-dark-secondary">2023-10-03</p>
+                  </div>
+                </div>
+                <p class="font-bold text-lg text-primary">₹5,000</p>
+              </div>
+            </div>
+          </section>
+          <section class="mb-12">
+            <div class="text-center">
+              <h2 class="text-3xl font-bold mb-2 text-text-light-primary dark:text-dark-primary">AI Insights</h2>
+              <p class="mb-6">Recommendations based on sales data.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+              <div class="flex items-start p-4 bg-card-light dark:bg-card-dark rounded-lg border border-border-light dark:border-border-dark">
+                <div class="p-3 bg-blue-100 dark:bg-blue-900/50 rounded-lg mr-4">
+                  <span class="material-icons-outlined text-primary">bar_chart</span>
+                </div>
+                <div>
+                  <h4 class="font-semibold text-text-light-primary dark:text-dark-primary">Sales Report</h4>
+                  <p class="text-sm">Sales increased by 15% compared to last month.</p>
+                </div>
+              </div>
+              <div class="flex items-start p-4 bg-card-light dark:bg-card-dark rounded-lg border border-border-light dark:border-border-dark">
+                <div class="p-3 bg-blue-100 dark:bg-blue-900/50 rounded-lg mr-4">
+                  <span class="material-icons-outlined text-primary">insights</span>
+                </div>
+                <div>
+                  <h4 class="font-semibold text-text-light-primary dark:text-dark-primary">Market Trend</h4>
+                  <p class="text-sm">Wall-mounted taps are trending upward.</p>
+                </div>
+              </div>
+            </div>
+          </section>
+          <footer class="text-center text-xs text-gray-400 dark:text-gray-500 pt-8 border-t border-border-light dark:border-border-dark">
+            <p>Last updated on: 2023-10-05 14:00</p>
+            <p>Data Source: Ranbir BI System</p>
+          </footer>
+        </div>
+      `,
+
+      // --- Inventory Page Content ---
+      'inventory': `
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <section class="text-center my-16">
+            <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold text-text-light-primary dark:text-dark-primary">Welcome, Inventory Manager</h2>
+            <p class="mt-4 text-base sm:text-lg text-text-light-tertiary dark:text-dark-tertiary">Monitor and manage your inventory effectively.</p>
+            <div class="mt-8 flex justify-center space-x-4">
+              <button class="px-6 py-2.5 border border-primary text-primary font-semibold rounded-md shadow-sm hover:bg-primary/10 dark:hover:bg-primary/20 transition-all duration-300">Settings</button>
+              <button class="px-6 py-2.5 bg-primary text-white font-semibold rounded-md shadow-md hover:bg-blue-800 dark:hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all duration-300">View Reports</button>
+            </div>
+          </section>
+          <section class="my-16">
+            <div class="text-center">
+              <h3 class="text-3xl sm:text-4xl font-bold text-text-light-primary dark:text-dark-primary">Key Performance Indicators</h3>
+              <p class="mt-2 text-text-light-tertiary dark:text-dark-tertiary">Overview of current inventory status.</p>
+              <div class="mt-6">
+                <button class="px-6 py-2.5 bg-text-light-secondary dark:bg-slate-700 text-white font-semibold rounded-md shadow-md hover:bg-gray-800 dark:hover:bg-slate-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-all duration-300">Download Summary</button>
+              </div>
+            </div>
+            <div class="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div class="p-6 bg-surface-light dark:bg-surface-dark rounded-lg flex items-center space-x-4">
+                <div class="p-3 bg-primary/10 dark:bg-primary/20 rounded-full">
+                  <span class="material-symbols-outlined text-primary">inventory_2</span>
+                </div>
+                <div>
+                  <p class="text-sm text-text-light-tertiary dark:text-dark-tertiary">Total Products</p>
+                  <p class="text-3xl font-bold text-text-light-primary dark:text-dark-primary">1500</p>
+                </div>
+              </div>
+              <div class="p-6 bg-surface-light dark:bg-surface-dark rounded-lg flex items-center space-x-4">
+                <div class="p-3 bg-primary/10 dark:bg-primary/20 rounded-full">
+                  <span class="material-symbols-outlined text-primary">warning</span>
+                </div>
+                <div>
+                  <p class="text-sm text-text-light-tertiary dark:text-dark-tertiary">Low Stock Items</p>
+                  <p class="text-3xl font-bold text-text-light-primary dark:text-dark-primary">20</p>
+                </div>
+              </div>
+              <div class="p-6 bg-surface-light dark:bg-surface-dark rounded-lg flex items-center space-x-4">
+                <div class="p-3 bg-primary/10 dark:bg-primary/20 rounded-full">
+                  <span class="material-symbols-outlined text-primary">groups</span>
+                </div>
+                <div>
+                  <p class="text-sm text-text-light-tertiary dark:text-dark-tertiary">Supplier Count</p>
+                  <p class="text-3xl font-bold text-text-light-primary dark:text-dark-primary">5</p>
+                </div>
+              </div>
+              <div class="p-6 bg-surface-light dark:bg-surface-dark rounded-lg flex items-center space-x-4">
+                <div class="p-3 bg-primary/10 dark:bg-primary/20 rounded-full">
+                  <span class="material-symbols-outlined text-primary">local_shipping</span>
+                </div>
+                <div>
+                  <p class="text-sm text-text-light-tertiary dark:text-dark-tertiary">Average Delivery Time</p>
+                  <p class="text-3xl font-bold text-text-light-primary dark:text-dark-primary">4 Days</p>
+                </div>
+              </div>
+              <div class="p-6 bg-surface-light dark:bg-surface-dark rounded-lg col-span-1 sm:col-span-2 lg:col-span-2 flex items-center space-x-4">
+                <div class="p-3 bg-primary/10 dark:bg-primary/20 rounded-full">
+                  <span class="material-symbols-outlined text-primary">request_quote</span>
+                </div>
+                <div>
+                  <p class="text-sm text-text-light-tertiary dark:text-dark-tertiary">Inventory Value</p>
+                  <p class="text-3xl font-bold text-text-light-primary dark:text-dark-primary">₹1 Crore</p>
+                </div>
+              </div>
+            </div>
+          </section>
+          <section class="my-16">
+            <div class="text-center">
+              <h3 class="text-3xl sm:text-4xl font-bold text-text-light-primary dark:text-dark-primary">Inventory Insights</h3>
+              <p class="mt-2 text-text-light-tertiary dark:text-dark-tertiary">Visual representation of stock trends.</p>
+            </div>
+            <div class="mt-12 grid grid-cols-1 lg:grid-cols-5 gap-8">
+              <div class="lg:col-span-3 p-6 bg-surface-light dark:bg-surface-dark rounded-lg">
+                <h4 class="text-lg font-semibold text-text-light-primary dark:text-dark-primary">Product Quantity by Category</h4>
+                <p class="text-sm text-text-light-tertiary dark:text-dark-tertiary mb-4">Quantity</p>
+                <div class="h-64 sm:h-80"><canvas id="quantityChart"></canvas></div>
+              </div>
+              <div class="lg:col-span-2 p-6 bg-surface-light dark:bg-surface-dark rounded-lg">
+                <h4 class="text-lg font-semibold text-text-light-primary dark:text-dark-primary">Supplier Performance</h4>
+                <p class="text-sm text-text-light-tertiary dark:text-dark-tertiary mb-4">On-time Deliveries %</p>
+                <div class="h-64 sm:h-80 flex items-center justify-center"><canvas id="supplierChart"></canvas></div>
+              </div>
+              <div class="lg:col-span-5 p-6 bg-surface-light dark:bg-surface-dark rounded-lg">
+                <h4 class="text-lg font-semibold text-text-light-primary dark:text-dark-primary">Stock Levels Over Time</h4>
+                <p class="text-sm text-text-light-tertiary dark:text-dark-tertiary mb-4">Stock Level</p>
+                <div class="h-64 sm:h-80"><canvas id="stockLevelsChart"></canvas></div>
+              </div>
+            </div>
+          </section>
+          <section class="my-16">
+            <div class="text-center">
+              <h3 class="text-3xl sm:text-4xl font-bold text-text-light-primary dark:text-dark-primary">Low Stock Alerts</h3>
+              <p class="mt-2 text-text-light-tertiary dark:text-dark-tertiary">Items that need immediate attention.</p>
+            </div>
+            <div class="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 justify-center">
+              <div class="bg-amber-100 dark:bg-yellow-900/30 border border-amber-300 dark:border-yellow-700/50 p-6 rounded-lg text-center flex flex-col items-center">
+                <img alt="Bathroom faucet" class="w-24 h-24 object-contain mb-4" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDDyTuIfzkOQ02_rgW-rEJ0BEh5n2EJlx9yY5EZotp-wDzIbB1iXGluZIywwSGvwIZVKgr4hMg8lDqKrnINbuercvZL2Q1JYjtAAbn-SVblir_MOs8Sx_C-OpkPH5MQ_coOGA36ADrrjXLkOtcMVaNAEaybb7sh15YDhOFvVLaA0cihNdNGtts2aG_JLPk5egspDu9Q0s3JyAjE8f0qKvYzEz5yEG4niexa3tYuWFfIt-HJ2YfJxPq53ifw5XrkEVvJFIizstohYFk" onerror="this.src='https://placehold.co/100x100/FEF3E6/333333?text=Faucet'">
+                <h5 class="text-lg font-semibold text-text-light-primary dark:text-dark-primary">Bathroom Faucet</h5>
+                <p class="text-sm text-text-light-tertiary dark:text-dark-tertiary">5 units left</p>
+                <p class="mt-2 text-xl font-bold text-amber-600 dark:text-yellow-400">Reorder Level: 10</p>
+                <div class="mt-4 flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2 w-full">
+                  <button class="flex-1 px-4 py-2 border border-primary text-primary font-semibold rounded-md shadow-sm hover:bg-primary/10 dark:hover:bg-primary/20 transition-all duration-300 text-sm">View Details</button>
+                  <button class="flex-1 px-4 py-2 bg-primary text-white font-semibold rounded-md shadow-md hover:bg-blue-800 dark:hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all duration-300 text-sm">Reorder Now</button>
+                </div>
+              </div>
+              <div class="bg-amber-100 dark:bg-yellow-900/30 border border-amber-300 dark:border-yellow-700/50 p-6 rounded-lg text-center flex flex-col items-center">
+                <img alt="Toilet paper holder" class="w-24 h-24 object-contain mb-4" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBlVEaSoFuhZYWHSNoXQo_zf-teiE0p5OFdXVjN6r9xy-AN6BPt-Bc9HG0xf-AzF2B6t6mVHj1C3W5spjD86MtqSyuLEMshXpMX-UnAXPi-mME4j0Or-aDMDIMm_96lZDx6labY86wMM1rbKOPUzsv1o3TAycsbmOiQEMvXRthgSyQkwVqjvKQ8wRd9XhZNkzhU4ToKCwRec6HzFLOklphBStrTAVkzjPWVPURIa3QAyijlpbzuGWhqUnBuHJJMP1NHcTHQjJIy6ao" onerror="this.src='https://placehold.co/100x100/FEF3E6/333333?text=Holder'">
+                <h5 class="text-lg font-semibold text-text-light-primary dark:text-dark-primary">Toilet Paper Holder</h5>
+                <p class="text-sm text-text-light-tertiary dark:text-dark-tertiary">8 units left</p>
+                <p class="mt-2 text-xl font-bold text-amber-600 dark:text-yellow-400">Reorder Level: 15</p>
+                <div class="mt-4 flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2 w-full">
+                  <button class="flex-1 px-4 py-2 border border-primary text-primary font-semibold rounded-md shadow-sm hover:bg-primary/10 dark:hover:bg-primary/20 transition-all duration-300 text-sm">View Details</button>
+                  <button class="flex-1 px-4 py-2 bg-primary text-white font-semibold rounded-md shadow-md hover:bg-blue-800 dark:hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all duration-300 text-sm">Reorder Now</button>
+                </div>
+              </div>
+            </div>
+          </section>
+          <footer class="mt-16 pt-8 border-t border-border-light dark:border-border-dark text-center text-xs text-text-light-tertiary dark:text-dark-tertiary">
+            <p>Inventory data auto-updated daily at 9:00 AM.</p>
+            <p class="mt-1">Data Source: Ranbir BI Inventory Records.</p>
+          </footer>
+        </div>
+      `,
+
+      // --- Customers Page Content ---
+      'customers': `
+        <main class="px-4 sm:px-6 lg:px-8 py-8 flex-1">
+          <div class="layout-content-container flex flex-col max-w-7xl mx-auto flex-1">
+            <div class="flex flex-wrap justify-between gap-4 items-center mb-8">
+              <h1 class="text-text-light dark:text-text-dark text-4xl font-black leading-tight tracking-[-0.033em] min-w-72">Customer Analysis Dashboard</h1>
+              <button class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-5 bg-primary text-white text-sm font-medium leading-normal tracking-[0.015em] shadow-md hover:shadow-lg hover:bg-blue-800 transition-all duration-300">
+                <span class="truncate">Export Report</span>
+              </button>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+              <div class="flex flex-col gap-2 rounded-xl p-6 bg-section-light dark:bg-section-dark">
+                <div class="flex items-center justify-between text-subtext-light dark:text-subtext-dark">
+                  <p class="text-base font-medium">Repeat Purchase Rate</p>
+                  <span class="material-symbols-outlined">repeat</span>
+                </div>
+                <p class="text-text-light dark:text-text-dark tracking-light text-4xl font-bold leading-tight">25%</p>
+              </div>
+              <div class="flex flex-col gap-2 rounded-xl p-6 bg-section-light dark:bg-section-dark">
+                <div class="flex items-center justify-between text-subtext-light dark:text-subtext-dark">
+                  <p class="text-base font-medium">Customer Satisfaction</p>
+                  <span class="material-symbols-outlined">sentiment_satisfied</span>
+                </div>
+                <p class="text-text-light dark:text-text-dark tracking-light text-4xl font-bold leading-tight">92%</p>
+              </div>
+              <div class="flex flex-col gap-2 rounded-xl p-6 bg-section-light dark:bg-section-dark">
+                <div class="flex items-center justify-between text-subtext-light dark:text-subtext-dark">
+                  <p class="text-base font-medium">Average Product Rating</p>
+                  <span class="material-symbols-outlined">star</span>
+                </div>
+                <p class="text-text-light dark:text-text-dark tracking-light text-4xl font-bold leading-tight">4.5</p>
+              </div>
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+              <div class="flex flex-col gap-2 rounded-xl bg-section-light dark:bg-section-dark p-6">
+                <p class="text-text-light dark:text-text-dark text-base font-medium">Customer Demographics</p>
+                <p class="text-text-light dark:text-text-dark tracking-light text-[32px] font-bold leading-tight truncate">Age Groups</p>
+                <div class="flex gap-1">
+                  <p class="text-subtext-light dark:text-subtext-dark text-sm font-normal leading-normal">All Time</p>
+                  <p class="text-green-600 dark:text-green-400 text-sm font-medium leading-normal">+5%</p>
+                </div>
+                <!-- Mockup of Bar Chart -->
+                <div class="w-full h-64 mt-4">
+                  <canvas id="ageGroupChart"></canvas>
+                </div>
+              </div>
+              <div class="flex flex-col gap-2 rounded-xl bg-section-light dark:bg-section-dark p-6">
+                <p class="text-text-light dark:text-text-dark text-base font-medium">Customer Behavior Trends</p>
+                <p class="text-text-light dark:text-text-dark tracking-light text-[32px] font-bold leading-tight truncate">Purchases per Month</p>
+                <div class="flex gap-1">
+                  <p class="text-subtext-light dark:text-subtext-dark text-sm font-normal leading-normal">Last 30 Days</p>
+                  <p class="text-green-600 dark:text-green-400 text-sm font-medium leading-normal">+12%</p>
+                </div>
+                <!-- Mockup of Line Chart -->
+                <div class="w-full h-64 mt-4">
+                    <canvas id="purchasesChart"></canvas>
+                </div>
+              </div>
+            </div>
+            <h2 class="text-text-light dark:text-text-dark text-[22px] font-bold leading-tight tracking-[-0.015em] mb-4">Recent Feedback</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div class="flex flex-col gap-4 rounded-xl p-6 bg-[#EBF5FF] dark:bg-blue-900/20">
+                <div class="flex items-center gap-3">
+                  <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="Avatar of Priya Patel" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBK3_B9FzyMCJBL8KFG7E2MZYp4t3VXtngQwtW6a6AOTcARqSGQASENNbkJZ8ENhYVPdOslrqhz7mRMgbBG8RmdA5E-aPj8RIykjdNhVSZodGRp8q4E7JsMYgbAJ84l2m_eLU93ZXKdi38Gt-HyqyvKyIwNtE7az1KUtsVwNc90x63XpYIaRuKvt9Ley8BR3gb_zMm0n24ureWxR6Fn97r6FRLvz7AyKCkIlatOycOl_6iaM4Xm0_brjaNAPDv_MYmmOX6wk70IIYg");' onerror="this.src='https://placehold.co/100x100/EBF5FF/1E3A8A?text=PP'"></div>
+                  <div>
+                    <p class="text-text-light dark:text-text-dark font-semibold">Priya Patel</p>
+                    <div class="flex items-center text-yellow-500">
+                      <span class="material-symbols-outlined text-sm">star</span>
+                      <span class="material-symbols-outlined text-sm">star</span>
+                      <span class="material-symbols-outlined text-sm">star</span>
+                      <span class="material-symbols-outlined text-sm">star</span>
+                      <span class="material-symbols-outlined text-sm">star_half</span>
+                    </div>
+                  </div>
+                </div>
+                <p class="text-subtext-light dark:text-subtext-dark text-sm leading-relaxed">"The product quality is consistently high, and the delivery is always prompt. I'm very satisfied with my purchases."</p>
+              </div>
+              <div class="flex flex-col gap-4 rounded-xl p-6 bg-[#E6F4EA] dark:bg-green-900/20">
+                <div class="flex items-center gap-3">
+                  <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="Avatar of Rohan Sharma" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBFiC_hyQKMR_uZ2EZWNNEFaYIAV-lc9dP0U2BPSIkWFyBznpO9AWZzCzuVkLDl7hJ578tHdGvu7uyNNnnj7a32Q6CP0tXbEqfO1dScJK2HTu2doWjeQMB8Y3H4v3UfCWE2Z-sYsufgajc_cSg2R8WzFrhRX1lUqTRfqplomdNcuzRhpQfVGnI-ao0lq9Ewp8hzZELCmHDxNx3yEcT98p7ZHNuWZgJx9pjJ2_QVk7nzAPSlVGZcTm45FkyIFC2NkQ30w4968Oy4WEU");' onerror="this.src='https://placehold.co/100x100/E6F4EA/1E3A8A?text=RS'"></div>
+                  <div>
+                    <p class="text-text-light dark:text-text-dark font-semibold">Rohan Sharma</p>
+                    <div class="flex items-center text-yellow-500">
+                      <span class="material-symbols-outlined text-sm">star</span>
+                      <span class="material-symbols-outlined text-sm">star</span>
+                      <span class="material-symbols-outlined text-sm">star</span>
+                      <span class="material-symbols-outlined text-sm">star</span>
+                      <span class="material-symbols-outlined text-sm">star</span>
+                    </div>
+                  </div>
+                </div>
+                <p class="text-subtext-light dark:text-subtext-dark text-sm leading-relaxed">"Excellent customer service! They helped me find the exact part I needed and were very knowledgeable."</p>
+              </div>
+              <div class="flex flex-col gap-4 rounded-xl p-6 bg-[#FEF3E6] dark:bg-orange-900/20">
+                <div class="flex items-center gap-3">
+                  <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="Avatar of Ananya Gupta" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCGhtyAk7GZ4V_6jOP3Q5sNZktuSaxBXLDLuqzIFKZfiYWePhW7h_xZ4gwqMlCbxhPIKfmYDe8f0k0kfd6WPFEed4N49KpQ76XBOezgnXRNJAXdH0VJqvc2u6Fc-ZFWBSHt3dXZYvItb1BAMlywtzBQEJWA2TiOSUZaNI7fHDVdZO8-gnr0pzXTDIayfzQayLgb7HeTcThZ_1hVU5JBMoRmEAMgebJzlsJCxgCvnz6c3g0nRVcgKTrWxuUMeWie7AcE79_16VmqWZY");' onerror="this.src='https://placehold.co/100x100/FEF3E6/1E3A8A?text=AG'"></div>
+                  <div>
+                    <p class="text-text-light dark:text-text-dark font-semibold">Ananya Gupta</p>
+                    <div class="flex items-center text-yellow-500">
+                      <span class="material-symbols-outlined text-sm">star</span>
+                      <span class="material-symbols-outlined text-sm">star</span>
+                      <span class="material-symbols-outlined text-sm">star</span>
+                      <span class="material-symbols-outlined text-sm">star_outline</span>
+                      <span class="material-symbols-outlined text-sm">star_outline</span>
+                    </div>
+                  </div>
+                </div>
+                <p class="text-subtext-light dark:text-subtext-dark text-sm leading-relaxed">"The website is easy to navigate, but I wish there were more detailed product specifications available online."</p>
+              </div>
+            </div>
+          </div>
+        </main>
+      `,
+
+      // --- Operations Page Content ---
+      'operations': `
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <section class="text-center mb-12">
+            <h2 class="text-4xl font-medium text-heading-light dark:text-heading-dark mb-2">Welcome, Operations Head</h2>
+            <p class="text-subtle-light dark:text-subtle-dark mb-6">Your dashboard for tracking store operations.</p>
+            <div class="flex justify-center space-x-4 mb-6">
+              <button class="px-6 py-2 border border-border-light dark:border-border-dark rounded-lg shadow-sm hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-200">Logout</button>
+              <button class="bg-primary text-white px-6 py-2 rounded-lg shadow-md hover:bg-blue-800 transform hover:-translate-y-0.5 transition-all duration-200">View Notifications</button>
+            </div>
+            <div class="flex justify-center space-x-2">
+              <button class="bg-gray-200 dark:bg-gray-700 text-sm px-5 py-1.5 rounded-lg text-subtle-light dark:text-subtle-dark">KPIs</button>
+              <button class="bg-gray-200 dark:bg-gray-700 text-sm px-5 py-1.5 rounded-lg text-subtle-light dark:text-subtle-dark">Reports</button>
+            </div>
+          </section>
+          <section class="mb-12">
+            <div class="text-center mb-8">
+              <h2 class="text-3xl font-medium text-heading-light dark:text-heading-dark">Key Performance Indicators</h2>
+              <p class="text-subtle-light dark:text-subtle-dark mt-1">Monitor your store's operational metrics.</p>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
+              <div class="bg-card-light dark:bg-card-dark p-6 rounded-lg shadow-sm">
+                <div class="flex items-center text-subtle-light dark:text-subtle-dark mb-2">
+                  <span class="material-icons text-lg mr-2">timer</span>
+                  <h3 class="text-sm">Avg. Delivery Time</h3>
+                </div>
+                <p class="text-3xl font-medium text-heading-light dark:text-heading-dark">30 mins</p>
+                <p class="text-sm text-red-500 flex items-center mt-1"><span class="material-icons text-base">arrow_downward</span>5%</p>
+              </div>
+              <div class="bg-card-light dark:bg-card-dark p-6 rounded-lg shadow-sm">
+                <div class="flex items-center text-subtle-light dark:text-subtle-dark mb-2">
+                  <span class="material-icons text-lg mr-2">task_alt</span>
+                  <h3 class="text-sm">On-Time Delivery %</h3>
+                </div>
+                <p class="text-3xl font-medium text-heading-light dark:text-heading-dark">92%</p>
+                <p class="text-sm text-green-500 flex items-center mt-1"><span class="material-icons text-base">arrow_upward</span>2%</p>
+              </div>
+              <div class="bg-card-light dark:bg-card-dark p-6 rounded-lg shadow-sm">
+                <div class="flex items-center text-subtle-light dark:text-subtle-dark mb-2">
+                  <span class="material-icons text-lg mr-2">groups</span>
+                  <h3 class="text-sm">Staff Productivity</h3>
+                </div>
+                <p class="text-3xl font-medium text-heading-light dark:text-heading-dark">85%</p>
+                <p class="text-sm text-green-500 flex items-center mt-1"><span class="material-icons text-base">arrow_upward</span>1%</p>
+              </div>
+              <div class="bg-card-light dark:bg-card-dark p-6 rounded-lg shadow-sm">
+                <div class="flex items-center text-subtle-light dark:text-subtle-dark mb-2">
+                  <span class="material-icons text-lg mr-2">payments</span>
+                  <h3 class="text-sm">Daily Operating Cost</h3>
+                </div>
+                <p class="text-3xl font-medium text-heading-light dark:text-heading-dark">₹93,000</p>
+                <p class="text-sm text-red-500 flex items-center mt-1"><span class="material-icons text-base">arrow_upward</span>3%</p>
+              </div>
+              <div class="bg-card-light dark:bg-card-dark p-6 rounded-lg shadow-sm">
+                <div class="flex items-center text-subtle-light dark:text-subtle-dark mb-2">
+                  <span class="material-icons text-lg mr-2">inventory_2</span>
+                  <h3 class="text-sm">Total Orders Processed</h3>
+                </div>
+                <p class="text-3xl font-medium text-heading-light dark:text-heading-dark">150</p>
+                <p class="text-sm text-green-500 flex items-center mt-1"><span class="material-icons text-base">arrow_upward</span>10%</p>
+              </div>
+            </div>
+          </section>
+          <section class="mb-12">
+            <div class="text-center mb-8">
+              <h2 class="text-3xl font-medium text-heading-light dark:text-heading-dark">Performance Analysis</h2>
+              <p class="text-subtle-light dark:text-subtle-dark mt-1">Visual insights into key operational areas.</p>
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              <div class="lg:col-span-2 bg-card-light dark:bg-card-dark p-6 rounded-lg shadow-sm flex flex-col">
+                <h3 class="text-lg font-medium text-heading-light dark:text-heading-dark mb-1">Delivery Time Trend</h3>
+                <p class="text-sm text-subtle-light dark:text-subtle-dark mb-4">Average minutes per delivery over the last 7 days.</p>
+                <div class="flex-grow h-80">
+                  <canvas id="deliveryTimeChart"></canvas>
+                </div>
+              </div>
+              <div class="bg-card-light dark:bg-card-dark p-6 rounded-lg shadow-sm flex flex-col justify-center items-center text-center">
+                <h3 class="text-lg font-medium text-heading-light dark:text-heading-dark mb-1">Expense Distribution</h3>
+                <p class="text-sm text-subtle-light dark:text-subtle-dark mb-4">Breakdown of operational costs.</p>
+                <div class="relative w-full h-64 sm:h-80">
+                  <canvas id="expenseDistributionChart"></canvas>
+                </div>
+              </div>
+            </div>
+          </section>
+          <section class="mb-12">
+            <div class="bg-card-light dark:bg-card-dark p-6 rounded-lg shadow-sm">
+              <div class="text-center mb-6">
+                <h3 class="text-lg font-medium text-heading-light dark:text-heading-dark">Task Completion Rate by Employee</h3>
+                <p class="text-sm text-subtle-light dark:text-subtle-dark mt-1">Individual performance metrics.</p>
+              </div>
+              <div class="relative h-80">
+                <canvas id="taskCompletionChart"></canvas>
+              </div>
+            </div>
+          </section>
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-12">
+            <section>
+              <div class="text-center mb-8">
+                <h2 class="text-3xl font-medium text-heading-light dark:text-heading-dark">Daily Operations Summary</h2>
+                <p class="text-subtle-light dark:text-subtle-dark mt-1">Quick overview of daily store operations.</p>
+              </div>
+              <div class="bg-card-light dark:bg-card-dark p-6 rounded-lg shadow-sm space-y-4">
+                <div class="flex items-center justify-between pb-4 border-b border-border-light dark:border-border-dark">
+                  <div class="flex items-center">
+                    <div class="bg-blue-100 dark:bg-blue-900/50 p-2 rounded-full mr-4">
+                      <span class="material-icons text-primary">calendar_today</span>
+                    </div>
+                    <div>
+                      <p class="font-medium text-heading-light dark:text-heading-dark">Date: Today</p>
+                      <p class="text-sm text-subtle-light dark:text-subtle-dark">Department: All</p>
+                    </div>
+                  </div>
+                  <p class="font-medium text-heading-light dark:text-heading-dark">Tasks Completed: 120</p>
+                </div>
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center">
+                    <div class="bg-blue-100 dark:bg-blue-900/50 p-2 rounded-full mr-4">
+                      <span class="material-icons text-primary">hourglass_empty</span>
+                    </div>
+                    <div>
+                      <p class="font-medium text-heading-light dark:text-heading-dark">Delivery Delays:</p>
+                      <p class="text-sm text-subtle-light dark:text-subtle-dark">5 Delays</p>
+                    </div>
+                  </div>
+                  <p class="font-medium text-heading-light dark:text-heading-dark">Total Cost: ₹80,000</p>
+                </div>
+              </div>
+            </section>
+            <section>
+              <div class="text-center mb-8">
+                <h2 class="text-3xl font-medium text-heading-light dark:text-heading-dark">Alerts &amp; Notifications</h2>
+                <p class="text-subtle-light dark:text-subtle-dark mt-1">Stay updated on critical alerts.</p>
+              </div>
+              <div class="bg-card-light dark:bg-card-dark p-6 rounded-lg shadow-sm space-y-4">
+                <div class="flex items-center pb-4 border-b border-border-light dark:border-border-dark">
+                  <div class="bg-yellow-100 dark:bg-yellow-900/50 p-2 rounded-full mr-4">
+                    <span class="material-icons text-yellow-500">warning</span>
+                  </div>
+                  <p>Employee X below productivity threshold.</p>
+                </div>
+                <div class="flex items-center">
+                  <div class="bg-yellow-100 dark:bg-yellow-900/50 p-2 rounded-full mr-4">
+                    <span class="material-icons text-yellow-500">local_shipping</span>
+                  </div>
+                  <p>Transport cost exceeded daily budget.</p>
+                </div>
+              </div>
+            </section>
+          </div>
+          <footer class="text-center text-sm text-subtle-light dark:text-subtle-dark pt-8 border-t border-border-light dark:border-border-dark">
+            <p>Operational data auto-updated daily at 6:00 PM. &nbsp;•&nbsp; Data Source: Ranbir BI Operations System.</p>
+          </footer>
+        </div>
+      `,
+
+      // --- Contact Page Content (New) ---
+      'contact': `
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
+          <div class="max-w-3xl mx-auto">
+            <div class="text-center mb-12">
+              <h2 class="text-4xl font-bold text-heading-light dark:text-heading-dark">Get in Touch</h2>
+              <p class="mt-4 text-lg text-subtle-light dark:text-subtle-dark">Have questions or need support? Reach out to us.</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <!-- Inquiry Form -->
+              <div class="bg-card-light dark:bg-card-dark p-8 rounded-lg shadow-md">
+                <h3 class="text-2xl font-semibold mb-6 text-heading-light dark:text-heading-dark">Send an Inquiry</h3>
+                <form action="#" method="POST" class="space-y-6">
+                  <div>
+                    <label for="name" class="block text-sm font-medium text-text-light-secondary dark:text-dark-secondary">Full Name</label>
+                    <input type="text" name="name" id="name" autocomplete="name" class="mt-1 block w-full rounded-md border-border-light dark:border-border-dark shadow-sm bg-background-light dark:bg-background-dark focus:border-primary focus:ring-primary">
+                  </div>
+                  <div>
+                    <label for="email" class="block text-sm font-medium text-text-light-secondary dark:text-dark-secondary">Email Address</label>
+                    <input type="email" name="email" id="email" autocomplete="email" class="mt-1 block w-full rounded-md border-border-light dark:border-border-dark shadow-sm bg-background-light dark:bg-background-dark focus:border-primary focus:ring-primary">
+                  </div>
+                  <div>
+                    <label for="subject" class="block text-sm font-medium text-text-light-secondary dark:text-dark-secondary">Subject</label>
+                    <input type="text" name="subject" id="subject" class="mt-1 block w-full rounded-md border-border-light dark:border-border-dark shadow-sm bg-background-light dark:bg-background-dark focus:border-primary focus:ring-primary">
+                  </div>
+                  <div>
+                    <label for="message" class="block text-sm font-medium text-text-light-secondary dark:text-dark-secondary">Message</label>
+                    <textarea id="message" name="message" rows="4" class="mt-1 block w-full rounded-md border-border-light dark:border-border-dark shadow-sm bg-background-light dark:bg-background-dark focus:border-primary focus:ring-primary"></textarea>
+                  </div>
+                  <div>
+                    <button type="submit" class="w-full justify-center py-3 px-6 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-primary hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
+                      Submit Inquiry
+                    </button>
+                  </div>
+                </form>
+              </div>
+              
+              <!-- Contact Details & WhatsApp -->
+              <div class="space-y-8">
+                <div class="bg-card-light dark:bg-card-dark p-8 rounded-lg shadow-md">
+                  <h3 class="text-2xl font-semibold mb-6 text-heading-light dark:text-heading-dark">Contact Details</h3>
+                  <div class="space-y-4">
+                    <div class="flex items-start">
+                      <span class="material-icons text-primary mr-4 mt-1">place</span>
+                      <span class="text-text-light-secondary dark:text-dark-secondary">Near Bus Stand, Batala</span>
+                    </div>
+                    <div class="flex items-start">
+                      <span class="material-icons text-primary mr-4 mt-1">email</span>
+                      <span class="text-text-light-secondary dark:text-dark-secondary">info@ranbirsanitarystore.com</span>
+                    </div>
+                    <div class="flex items-start">
+                      <span class="material-icons text-primary mr-4 mt-1">phone</span>
+                      <span class="text-text-light-secondary dark:text-dark-secondary">+91 9814045969</span>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="bg-green-50 dark:bg-green-900/30 p-8 rounded-lg shadow-md text-center">
+                  <h3 class="text-2xl font-semibold mb-4 text-heading-light dark:text-heading-dark">Chat with a Vendor</h3>
+                  <p class="mb-6 text-text-light-secondary dark:text-dark-secondary">Click the button below to start a chat on WhatsApp.</p>
+                  <a href="https://wa.me/911234567890" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center py-3 px-8 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                    <svg class="w-6 h-6 mr-3" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.62 15.34 3.5 16.8L2.59 20.41L6.31 19.53C7.75 20.33 9.35 20.81 11.04 20.81H12.04C17.5 20.81 21.96 16.36 21.96 10.9C21.96 5.44 17.5 1 12.04 1V2ZM12.04 2C17.5 2 21.96 6.45 21.96 11.91C21.96 17.37 17.5 21.82 12.04 21.82C10.23 21.82 8.54 21.31 7.1 20.4L6.91 20.29L3.62 21.22L4.57 18.06L4.44 17.83C3.5 16.27 3.02 14.52 3.02 12.7C3.02 6.45 7.47 2 12.04 2ZM12.04 4.13C8.52 4.13 5.65 6.97 5.65 10.49C5.65 12.21 6.2 13.8 7.16 15.08L7.33 15.32L6.1 19.04L9.93 17.84L10.16 17.99C11.38 18.72 12.78 19.08 14.23 19.08H12.04C15.56 19.08 18.43 16.24 18.43 12.72C18.43 9.2 15.56 6.36 12.04 6.36V4.13Z M10 8.13H14.08V10.13H10V8.13Z M7.97 10.9C7.97 9.8 8.89 8.9 10 8.9H14.08C15.19 8.9 16.1 9.8 16.1 10.9C16.1 12 15.19 12.9 14.08 12.9H10C8.89 12.9 7.97 12 7.97 10.9Z M10 13.66H14.08V15.66H10V13.66Z"></path></svg>
+                    Start WhatsApp Chat
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `,
+    };
+
+    // 2. Chart Initializer Functions
+    // Stores the functions that initialize charts for each page
+    const chartInitializers = {
+      
+      'home': () => {
+        // No charts on the home page
+      },
+
+      'sales': () => {
+        const isDarkMode = document.documentElement.classList.contains('dark');
+        const gridColor = isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
+        const textColor = isDarkMode ? '#E5E7EB' : '#333333';
+        const poppinsFont = "'Poppins', sans-serif";
+        
+        // Common Chart Defaults
+        Chart.defaults.font.family = poppinsFont;
+        Chart.defaults.color = textColor;
+        Chart.defaults.plugins.tooltip.backgroundColor = isDarkMode ? '#1F2937' : '#F9FAFB';
+        Chart.defaults.plugins.tooltip.titleColor = isDarkMode ? '#FFFFFF' : '#000000';
+        Chart.defaults.plugins.tooltip.bodyColor = textColor;
+        Chart.defaults.plugins.tooltip.borderColor = isDarkMode ? '#374151' : '#E5E7EB';
+        Chart.defaults.plugins.tooltip.borderWidth = 1;
+        Chart.defaults.plugins.tooltip.padding = 10;
+        Chart.defaults.plugins.tooltip.cornerRadius = 4;
+        Chart.defaults.animation.duration = 1000;
+        
+        // --- Sales Trend Chart (Line) ---
+        const salesTrendCtx = document.getElementById('salesTrendChart')?.getContext('2d');
+        if (salesTrendCtx) {
+          const salesChart = new Chart(salesTrendCtx, {
+            type: 'line',
+            data: {
+              labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+              datasets: [{
+                label: 'Revenue',
+                data: [30, 25, 40, 45, 70, 65, 60, 55, 75, 80, 70, 85],
+                borderColor: '#3B82F6',
+                backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                fill: true,
+                tension: 0.4,
+                pointBackgroundColor: '#3B82F6',
+              }, {
+                label: 'Expenses',
+                data: [15, 12, 18, 20, 25, 22, 20, 18, 28, 30, 25, 32],
+                borderColor: isDarkMode ? '#1E3A8A' : '#BFDBFE',
+                borderDash: [5, 5],
+                backgroundColor: 'transparent',
+                fill: false,
+                tension: 0.4,
+                pointBackgroundColor: isDarkMode ? '#1E3A8A' : '#BFDBFE',
+              }]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              scales: {
+                y: {
+                  beginAtZero: true,
+                  grid: { color: gridColor },
+                  ticks: { color: textColor, callback: (value) => `₹${value}k` }
+                },
+                x: {
+                  grid: { display: false },
+                  ticks: { color: textColor }
+                }
+              },
+              plugins: {
+                legend: { display: false },
+                tooltip: { mode: 'index', intersect: false }
+              },
+              interaction: { mode: 'nearest', axis: 'x', intersect: false }
+            }
+          });
+          activeCharts.push(salesChart);
+        }
+
+        // --- Profit by Category Chart (Doughnut) ---
+        const profitCategoryCtx = document.getElementById('profitCategoryChart')?.getContext('2d');
+        if (profitCategoryCtx) {
+          const profitChart = new Chart(profitCategoryCtx, {
+            type: 'doughnut',
+            data: {
+              labels: ['Faucets', 'Showers', 'Sinks', 'Others'],
+              datasets: [{
+                label: 'Profit',
+                data: [40, 25, 20, 15],
+                backgroundColor: ['#1E3A8A', '#3B82F6', '#60A5FA', '#93C5FD'],
+                borderColor: isDarkMode ? '#1F2937' : '#F9FAFB',
+                borderWidth: 4,
+                hoverOffset: 8
+              }]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              cutout: '70%',
+              plugins: {
+                legend: {
+                  position: 'bottom',
+                  labels: { color: textColor, padding: 15, usePointStyle: true },
+                },
+                tooltip: {
+                  callbacks: {
+                    label: (context) => ` ${context.label}: ${context.parsed}%`
+                  }
+                }
+              }
+            }
+          });
+          activeCharts.push(profitChart);
+        }
+      },
+      
+      'inventory': () => {
+        const isDarkMode = document.documentElement.classList.contains('dark');
+        const chartFontColor = isDarkMode ? '#D1D5DB' : '#333333';
+        const chartGridColor = isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
+
+        // Common Chart Options
+        const commonOptions = {
+          maintainAspectRatio: false,
+          responsive: true,
+          plugins: {
+            legend: {
+              labels: {
+                color: chartFontColor,
+                font: { family: 'Poppins' }
+              }
+            }
+          },
+          scales: {
+            y: {
+              ticks: { color: chartFontColor, font: { family: 'Poppins' } },
+              grid: { color: chartGridColor }
+            },
+            x: {
+              ticks: { color: chartFontColor, font: { family: 'Poppins' } },
+              grid: { color: 'transparent' }
+            }
+          }
+        };
+
+        // --- Product Quantity by Category Chart (Bar) ---
+        const qtyCtx = document.getElementById('quantityChart')?.getContext('2d');
+        if(qtyCtx) {
+          const qtyChart = new Chart(qtyCtx, {
+            type: 'bar',
+            data: {
+              labels: ['Faucets', 'Showers', 'Sinks', 'Toilets', 'Pipes', 'Accessories'],
+              datasets: [{
+                label: 'Quantity',
+                data: [250, 180, 150, 210, 160, 190],
+                backgroundColor: '#60A5FA', // soft blue
+                borderColor: '#1E3A8A',
+                borderWidth: 1,
+                borderRadius: 4
+              }]
+            },
+            options: { ...commonOptions, plugins: { legend: { display: false } } }
+          });
+          activeCharts.push(qtyChart);
+        }
+
+        // --- Stock Levels Over Time Chart (Line) ---
+        const stockCtx = document.getElementById('stockLevelsChart')?.getContext('2d');
+        if(stockCtx) {
+          const stockChart = new Chart(stockCtx, {
+            type: 'line',
+            data: {
+              labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
+              datasets: [{
+                label: 'Stock Level',
+                data: [1500, 1450, 1200, 1350, 1600, 1550, 1500],
+                fill: true,
+                backgroundColor: 'rgba(30, 58, 138, 0.1)',
+                borderColor: '#1E3A8A',
+                tension: 0.4
+              }]
+            },
+            options: { ...commonOptions, plugins: { legend: { display: false } } }
+          });
+          activeCharts.push(stockChart);
+        }
+
+        // --- Supplier Performance Chart (Doughnut) ---
+        const supplierCtx = document.getElementById('supplierChart')?.getContext('2d');
+        if(supplierCtx) {
+          const supplierChart = new Chart(supplierCtx, {
+            type: 'doughnut',
+            data: {
+              labels: ['Supplier A', 'Supplier B', 'Supplier C'],
+              datasets: [{
+                label: 'On-time Deliveries',
+                data: [95, 88, 92],
+                backgroundColor: ['#3B82F6', '#93C5FD', '#BFDBFE'], // soft blue tones
+                borderColor: isDarkMode ? '#1F2937' : '#F4F4F4',
+                borderWidth: 4,
+                hoverOffset: 8
+              }]
+            },
+            options: {
+              maintainAspectRatio: false,
+              responsive: true,
+              plugins: {
+                legend: {
+                  position: 'bottom',
+                  labels: {
+                    color: chartFontColor,
+                    font: { family: 'Poppins' },
+                    padding: 20
+                  }
+                }
+              }
+            }
+          });
+          activeCharts.push(supplierChart);
+        }
+      },
+      
+      'customers': () => {
+        const isDarkMode = document.documentElement.classList.contains('dark');
+        const gridColor = 'rgba(100, 116, 139, 0.2)';
+        const textColor = isDarkMode ? '#D1D5DB' : '#333333';
+        const poppinsFont = "'Poppins', sans-serif";
+
+        // Common Chart Defaults
+        Chart.defaults.font.family = poppinsFont;
+        Chart.defaults.color = textColor;
+        Chart.defaults.plugins.tooltip.backgroundColor = isDarkMode ? '#1F2937' : '#F9FAFB';
+        Chart.defaults.plugins.tooltip.titleColor = isDarkMode ? '#FFFFFF' : '#000000';
+        Chart.defaults.plugins.tooltip.bodyColor = textColor;
+
+        // --- Age Group Chart (Bar) ---
+        const ageCtx = document.getElementById('ageGroupChart')?.getContext('2d');
+        if(ageCtx) {
+          const ageChart = new Chart(ageCtx, {
+            type: 'bar',
+            data: {
+              labels: ['18-24', '25-34', '35-44', '45-54', '55+'],
+              datasets: [{
+                label: 'Age Groups',
+                data: [30, 60, 70, 90, 70],
+                backgroundColor: [
+                  'rgba(30, 58, 138, 0.5)',
+                  'rgba(30, 58, 138, 0.5)',
+                  'rgba(30, 58, 138, 0.5)',
+                  '#1E3A8A', // Highlighted
+                  'rgba(30, 58, 138, 0.5)',
+                ],
+                borderRadius: 4,
+              }]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              scales: {
+                y: { display: false, grid: { display: false } },
+                x: {
+                  grid: { display: false },
+                  ticks: { color: textColor }
+                }
+              },
+              plugins: { legend: { display: false } }
+            }
+          });
+          activeCharts.push(ageChart);
+        }
+
+        // --- Purchases per Month Chart (Line) ---
+        const purchasesCtx = document.getElementById('purchasesChart')?.getContext('2d');
+        if(purchasesCtx) {
+          const purchasesChart = new Chart(purchasesCtx, {
+            type: 'line',
+            data: {
+              labels: ['Week 1', ' ', ' ', ' ', 'Week 2', ' ', ' ', ' ', 'Week 3', ' ', ' ', ' ', 'Week 4', ' ', ' '],
+              datasets: [{
+                label: 'Purchases',
+                data: [109, 21, 41, 93, 33, 101, 61, 45, 121, 149, 1, 81, 129, 25, 100],
+                borderColor: '#1E3A8A',
+                backgroundColor: 'rgba(30, 58, 138, 0.1)',
+                fill: true,
+                tension: 0.4,
+                pointRadius: 0,
+              }]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              scales: {
+                y: { display: false, grid: { display: false } },
+                x: {
+                  grid: { display: false },
+                  ticks: { 
+                    color: textColor,
+                    callback: (value, index) => {
+                      // Show only 'Week x' labels
+                      const label = purchasesCtx.canvas.clientWidth > 400 ? 
+                        ['Week 1', 'Week 2', 'Week 3', 'Week 4'] : 
+                        ['W1', 'W2', 'W3', 'W4'];
+                      if (index === 0) return label[0];
+                      if (index === 4) return label[1];
+                      if (index === 8) return label[2];
+                      if (index === 12) return label[3];
+                      return null;
+                    }
+                  }
+                }
+              },
+              plugins: { legend: { display: false } }
+            }
+          });
+          activeCharts.push(purchasesChart);
+        }
+      },
+
+      'operations': () => {
+        const isDarkMode = document.documentElement.classList.contains('dark');
+        const gridColor = isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
+        const textColor = isDarkMode ? '#E5E7EB' : '#333333';
+        const poppinsFont = "'Poppins', sans-serif";
+
+        // Common Chart Defaults
+        Chart.defaults.font.family = poppinsFont;
+        Chart.defaults.color = textColor;
+        Chart.defaults.plugins.tooltip.backgroundColor = isDarkMode ? '#1F2937' : '#F9FAFB';
+        Chart.defaults.plugins.tooltip.titleColor = isDarkMode ? '#FFFFFF' : '#000000';
+        Chart.defaults.plugins.tooltip.bodyColor = textColor;
+        Chart.defaults.plugins.tooltip.borderColor = isDarkMode ? '#374151' : '#E5E7EB';
+        Chart.defaults.plugins.tooltip.borderWidth = 1;
+        Chart.defaults.plugins.tooltip.padding = 10;
+        Chart.defaults.plugins.tooltip.cornerRadius = 4;
+        Chart.defaults.animation.duration = 1000;
+
+        // --- Delivery Time Trend Chart (Line) ---
+        const deliveryTimeCtx = document.getElementById('deliveryTimeChart')?.getContext('2d');
+        if(deliveryTimeCtx) {
+          const deliveryChart = new Chart(deliveryTimeCtx, {
+            type: 'line',
+            data: {
+              labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+              datasets: [{
+                label: 'Avg. Delivery Time (mins)',
+                data: [32, 28, 35, 30, 33, 29, 27],
+                borderColor: '#1E3A8A',
+                backgroundColor: 'rgba(30, 58, 138, 0.1)',
+                fill: true,
+                tension: 0.4,
+                pointBackgroundColor: '#1E3A8A',
+                pointBorderColor: '#fff',
+                pointHoverBackgroundColor: '#fff',
+                pointHoverBorderColor: '#1E3A8A',
+              }]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              scales: {
+                y: {
+                  beginAtZero: false,
+                  grid: { color: gridColor },
+                  ticks: { color: textColor }
+                },
+                x: {
+                  grid: { display: false },
+                  ticks: { color: textColor }
+                }
+              },
+              plugins: {
+                legend: { display: false },
+                tooltip: { mode: 'index', intersect: false }
+              },
+              interaction: { mode: 'nearest', axis: 'x', intersect: false }
+            }
+          });
+          activeCharts.push(deliveryChart);
+        }
+
+        // --- Task Completion Rate by Employee (Bar) ---
+        const taskCompletionCtx = document.getElementById('taskCompletionChart')?.getContext('2d');
+        if(taskCompletionCtx) {
+          const taskChart = new Chart(taskCompletionCtx, {
+            type: 'bar',
+            data: {
+              labels: ['Amit K.', 'Sunita S.', 'Ravi P.', 'Priya G.', 'Manoj V.', 'Anjali D.', 'Suresh M.'],
+              datasets: [{
+                label: 'Completion Rate',
+                data: [95, 88, 92, 78, 85, 98, 81],
+                backgroundColor: ['#60A5FA', '#93C5FD', '#BFDBFE', '#3B82F6', '#2563EB', '#1E40AF', '#1D4ED8'],
+                borderColor: 'transparent',
+                borderRadius: 4,
+                hoverBackgroundColor: '#1E3A8A',
+                barPercentage: 0.6,
+                categoryPercentage: 0.7,
+              }]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              scales: {
+                y: {
+                  beginAtZero: true,
+                  max: 100,
+                  grid: { color: gridColor },
+                  ticks: {
+                    color: textColor,
+                    callback: (value) => value + "%"
+                  }
+                },
+                x: {
+                  grid: { display: false },
+                  ticks: { color: textColor }
+                }
+              },
+              plugins: {
+                legend: { display: false },
+                tooltip: {
+                  callbacks: {
+                    label: (context) => ` ${context.dataset.label}: ${context.parsed.y}%`
+                  }
+                }
+              }
+            }
+          });
+          activeCharts.push(taskChart);
+        }
+
+        // --- Expense Distribution Chart (Doughnut) ---
+        const expenseDistributionCtx = document.getElementById('expenseDistributionChart')?.getContext('2d');
+        if(expenseDistributionCtx) {
+          const expenseChart = new Chart(expenseDistributionCtx, {
+            type: 'doughnut',
+            data: {
+              labels: ['Salaries', 'Logistics', 'Utilities', 'Supplies', 'Rent'],
+              datasets: [{
+                label: 'Expense Distribution',
+                data: [45, 25, 10, 5, 15],
+                backgroundColor: ['#1E3A8A', '#3B82F6', '#60A5FA', '#93C5FD', '#BFDBFE'],
+                borderColor: isDarkMode ? '#1F2937' : '#F9FAFB',
+                hoverOffset: 15,
+                hoverBorderColor: isDarkMode ? '#1F2937' : '#F9FAFB',
+                borderWidth: 4,
+              }]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              cutout: '70%',
+              plugins: {
+                legend: {
+                  position: 'bottom',
+                  labels: {
+                    color: textColor,
+                    padding: 20,
+                    usePointStyle: true,
+                  }
+                },
+                tooltip: {
+                  callbacks: {
+                    label: (context) => {
+                      let label = context.label || '';
+                      if (label) { label += ': '; }
+                      if (context.parsed !== null) { label += context.parsed + '%'; }
+                      return label;
+                    }
+                  }
+                }
+              }
+            }
+          });
+          activeCharts.push(expenseChart);
+        }
+      },
+      
+      'contact': () => {
+        // No charts on the contact page
+      }
+    };
+
+    // 3. Navigation Logic
+    const contentArea = document.getElementById('content-area');
+    const navLinks = document.querySelectorAll('.nav-link');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+    const adminToggleBtn = document.getElementById('admin-toggle-btn');
+    const adminNavLinks = document.querySelectorAll('a[data-admin="true"]');
+
+    function updateAdminView() {
+      if (isAdminView) {
+        // Show admin links
+        adminNavLinks.forEach(link => {
+          link.classList.remove('hidden');
+        });
+        adminToggleBtn.textContent = 'Exit Admin';
+        adminToggleBtn.classList.add('bg-red-100', 'text-red-700', 'dark:bg-red-900/50', 'dark:text-red-300');
+        adminToggleBtn.classList.remove('bg-primary/10', 'text-primary', 'dark:bg-primary/20', 'dark:text-blue-300');
+      } else {
+        // Hide admin links
+        adminNavLinks.forEach(link => {
+          link.classList.add('hidden');
+        });
+        adminToggleBtn.textContent = 'Admin';
+        adminToggleBtn.classList.remove('bg-red-100', 'text-red-700', 'dark:bg-red-900/50', 'dark:text-red-300');
+        adminToggleBtn.classList.add('bg-primary/10', 'text-primary', 'dark:bg-primary/20', 'dark:text-blue-300');
+      }
+    }
+
+    function renderPage(pageName) {
+      // 0. Default to 'home' if pageName is invalid
+      if (!pageContent[pageName]) {
+        pageName = 'home';
+      }
+
+      // 1. Destroy old charts
+      activeCharts.forEach(chart => chart.destroy());
+      activeCharts = [];
+
+      // 2. Set new page content
+      contentArea.innerHTML = pageContent[pageName];
+
+      // 3. Initialize new charts
+      if (chartInitializers[pageName]) {
+        // Use setTimeout to ensure DOM is updated before charts are initialized
+        setTimeout(() => {
+          chartInitializers[pageName]();
+        }, 0);
+      }
+
+      // 4. Update active nav link
+      navLinks.forEach(link => {
+        if (link.dataset.page === pageName) {
+          link.classList.add('active');
+        } else {
+          link.classList.remove('active');
+        }
+      });
+      
+      // 5. Close mobile menu
+      mobileMenu.classList.add('hidden');
+
+      // 6. Scroll to top
+      window.scrollTo(0, 0);
+
+      // 7. Check if the page is an admin page
+      const isPageAdmin = document.querySelector(`a[data-page="${pageName}"]`)?.dataset.admin === 'true';
+      if (isPageAdmin && !isAdminView) {
+        // Trying to access admin page while not in admin view, redirect to home
+        window.location.hash = 'home';
+        renderPage('home');
+        return; // Stop rendering this page
+      }
+    }
+
+    // --- Event Listeners ---
+    
+    // Handle nav link clicks
+    navLinks.forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const page = e.target.dataset.page;
+        if (page) {
+          // Update URL hash
+          window.location.hash = page;
+          renderPage(page);
+        }
+      });
+    });
+
+    // Toggle mobile menu
+    mobileMenuBtn.addEventListener('click', () => {
+      mobileMenu.classList.toggle('hidden');
+    });
+
+    // Handle admin toggle
+    adminToggleBtn.addEventListener('click', () => {
+      isAdminView = !isAdminView; // Toggle the state
+      updateAdminView();
+      
+      if (!isAdminView) {
+        // If exiting admin view, go back to home page
+        const currentPage = window.location.hash.substring(1) || 'home';
+        const currentPageEl = document.querySelector(`a[data-page="${currentPage}"]`);
+        if (currentPageEl && currentPageEl.dataset.admin === 'true') {
+          // Only navigate to home if currently on an admin page
+          window.location.hash = 'home';
+          renderPage('home');
+        }
+      } else {
+        // If entering admin view, go to sales dashboard
+        const currentPage = window.location.hash.substring(1) || 'home';
+        const currentPageEl = document.querySelector(`a[data-page="${currentPage}"]`);
+        if (!currentPageEl || currentPageEl.dataset.admin !== 'true') {
+           // Only navigate to sales if not already on an admin page
+          window.location.hash = 'sales';
+          renderPage('sales');
+        }
+      }
+    });
+
+    // Handle browser back/forward (hash changes)
+    window.addEventListener('hashchange', () => {
+      const page = window.location.hash.substring(1) || 'home';
+      renderPage(page);
+    });
+
+    // --- Initial Page Load ---
+    
+    // Get page from URL hash or default to 'home'
+    const initialPage = window.location.hash.substring(1) || 'home';
+    const isInitialPageAdmin = document.querySelector(`a[data-page="${initialPage}"]`)?.dataset.admin === 'true';
+    if (isInitialPageAdmin) {
+      // If loading directly to an admin page, force admin view
+      isAdminView = true;
+    }
+    updateAdminView(); // Apply initial view state
+    renderPage(initialPage);
+
+  </script>
+
+</body>
+
+</html>
